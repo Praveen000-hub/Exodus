@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardSkeleton } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Heart, Activity, Clock, TrendingUp, Shield, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Heart, Activity, Clock, TrendingUp, Shield, AlertTriangle, CheckCircle, Zap, Brain } from 'lucide-react';
 import { formatRelativeTime, getNextCheckTime, getRiskLevel, getRiskLabel } from '@/lib/utils';
 
 interface HealthData {
@@ -26,6 +26,25 @@ interface HealthGaugeCardProps {
 
 export function HealthGaugeCard({ healthData, isLoading }: HealthGaugeCardProps) {
   const [showDetails, setShowDetails] = useState(false);
+  const [pulse, setPulse] = useState(false);
+  const [nextCheckSeconds, setNextCheckSeconds] = useState(58);
+
+  useEffect(() => {
+    // Pulse animation for heart
+    const pulseInterval = setInterval(() => {
+      setPulse(prev => !prev);
+    }, 1000);
+
+    // Countdown timer
+    const countdownInterval = setInterval(() => {
+      setNextCheckSeconds(prev => prev > 0 ? prev - 1 : 58);
+    }, 1000);
+
+    return () => {
+      clearInterval(pulseInterval);
+      clearInterval(countdownInterval);
+    };
+  }, []);
 
   if (isLoading) {
     return <CardSkeleton className="h-72" />;
@@ -45,24 +64,40 @@ export function HealthGaugeCard({ healthData, isLoading }: HealthGaugeCardProps)
 
   const riskLevel = getRiskLevel(healthData.risk_percentage);
   const riskLabel = getRiskLabel(riskLevel);
+  const healthScore = 100 - healthData.risk_percentage;
   const hoursWorked = Math.round(healthData.continuous_driving_minutes / 60 * 10) / 10;
   const floorsClimbed = Math.floor(healthData.deliveries_completed * 2.5);
   
-  const getHealthIcon = () => {
-    switch (riskLevel) {
-      case 'green': return CheckCircle;
-      case 'yellow': return AlertTriangle;
-      case 'red': return AlertTriangle;
-      default: return Shield;
-    }
-  };
-
   const getHealthColor = () => {
     switch (riskLevel) {
-      case 'green': return 'text-green-500';
-      case 'yellow': return 'text-orange-500';
-      case 'red': return 'text-red-500';
-      default: return 'text-gray-500';
+      case 'green': return {
+        bg: 'bg-orange-50',
+        border: 'border-orange-200',
+        text: 'text-orange-700',
+        icon: 'text-orange-500',
+        progress: 'bg-orange-500'
+      };
+      case 'yellow': return {
+        bg: 'bg-orange-50',
+        border: 'border-orange-300',
+        text: 'text-orange-700',
+        icon: 'text-orange-500',
+        progress: 'bg-orange-500'
+      };
+      case 'red': return {
+        bg: 'bg-orange-50',
+        border: 'border-orange-400',
+        text: 'text-orange-700',
+        icon: 'text-orange-500',
+        progress: 'bg-orange-500'
+      };
+      default: return {
+        bg: 'bg-gray-50',
+        border: 'border-gray-200',
+        text: 'text-gray-700',
+        icon: 'text-gray-500',
+        progress: 'bg-gray-500'
+      };
     }
   };
 
@@ -75,19 +110,22 @@ export function HealthGaugeCard({ healthData, isLoading }: HealthGaugeCardProps)
     }
   };
 
-  const HealthIcon = getHealthIcon();
+  const colors = getHealthColor();
 
   return (
-    <Card interactive className="fairai-card-interactive">
-      <CardHeader>
+    <Card interactive className="fairai-card-interactive overflow-hidden">
+      <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-3">
-            <div className="p-2 bg-red-50 rounded-lg">
-              <Heart className="w-5 h-5 text-red-500" />
+            <div className={`p-2 ${colors.bg} rounded-lg relative`}>
+              <Heart 
+                className={`w-5 h-5 ${colors.icon} transition-transform duration-300 ${pulse ? 'scale-110' : 'scale-100'}`}
+                fill={pulse ? 'currentColor' : 'none'}
+              />
             </div>
             <div>
               <span className="text-heading">Health Guardian</span>
-              <Badge className="fairai-live-badge ml-2">
+              <Badge className="fairai-live-badge ml-2 animate-pulse">
                 <div className="fairai-live-dot" />
                 LIVE
               </Badge>
@@ -96,76 +134,132 @@ export function HealthGaugeCard({ healthData, isLoading }: HealthGaugeCardProps)
         </div>
       </CardHeader>
 
-      <CardContent className="space-card">
-        {/* Main Health Score */}
-        <div className="text-center space-y-4">
-          <div className="relative">
-            <div className="flex items-center justify-center gap-3 mb-2">
-              <HealthIcon className={`w-8 h-8 ${getHealthColor()}`} />
-              <div>
-                <div className="text-display">{100 - healthData.risk_percentage}%</div>
-                <div className="text-caption">Health Score</div>
+      <CardContent className="space-y-4">
+        {/* Main Health Score with Circular Progress */}
+        <div className={`${colors.bg} ${colors.border} border-2 rounded-2xl p-6 relative overflow-hidden`}>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full -mr-16 -mt-16"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/20 rounded-full -ml-12 -mb-12"></div>
+          
+          <div className="relative flex items-center justify-center gap-4">
+            <div className="relative">
+              {/* Circular progress */}
+              <svg className="transform -rotate-90 w-32 h-32">
+                <circle
+                  cx="64"
+                  cy="64"
+                  r="56"
+                  stroke="currentColor"
+                  strokeWidth="8"
+                  fill="none"
+                  className="text-white/40"
+                />
+                <circle
+                  cx="64"
+                  cy="64"
+                  r="56"
+                  stroke="currentColor"
+                  strokeWidth="8"
+                  fill="none"
+                  strokeLinecap="round"
+                  className={colors.icon}
+                  style={{
+                    strokeDasharray: `${2 * Math.PI * 56}`,
+                    strokeDashoffset: `${2 * Math.PI * 56 * (1 - healthScore / 100)}`,
+                    transition: 'stroke-dashoffset 1s ease-in-out'
+                  }}
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <AlertTriangle className={`w-6 h-6 ${colors.icon} mb-1`} />
+                <div className={`text-3xl font-bold ${colors.text}`}>{healthScore}%</div>
+              </div>
+            </div>
+            
+            <div className="text-left">
+              <div className="text-xs text-gray-600 mb-1">Health Score</div>
+              <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold ${colors.bg} ${colors.text} border-2 ${colors.border}`}>
+                <AlertTriangle className="w-4 h-4" />
+                {riskLabel}
               </div>
             </div>
           </div>
-          
-          <Progress 
-            value={100 - healthData.risk_percentage} 
-            variant={getProgressVariant() as any}
-            size="lg"
-            showValue={false}
-            className="h-3"
-          />
-          
-          <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${
-            riskLevel === 'green' ? 'bg-green-50 text-green-700' :
-            riskLevel === 'yellow' ? 'bg-orange-50 text-orange-700' : 
-            'bg-red-50 text-red-700'
-          }`}>
-            <HealthIcon className="w-4 h-4" />
-            {riskLabel}
-          </div>
         </div>
 
-        {/* Key Metrics */}
+        {/* Real-time Metrics Grid */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-blue-50 rounded-lg p-3 text-center hover-lift">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Clock className="w-4 h-4 text-blue-500" />
-              <span className="text-caption">Hours Worked</span>
+          <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 rounded-xl p-4 border border-orange-200 hover:shadow-lg hover:scale-105 transition-all cursor-pointer group">
+            <div className="flex items-center justify-between mb-2">
+              <Clock className="w-5 h-5 text-orange-500 group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-medium text-orange-600">Hours Worked</span>
             </div>
-            <div className="text-value-sm text-blue-600">{hoursWorked}h</div>
+            <div className="text-2xl font-bold text-orange-700">{hoursWorked}h</div>
+            <div className="h-1 bg-orange-200 rounded-full mt-2 overflow-hidden">
+              <div 
+                className="h-full bg-orange-500 rounded-full transition-all duration-1000"
+                style={{ width: `${(hoursWorked / 8) * 100}%` }}
+              ></div>
+            </div>
           </div>
           
-          <div className="bg-green-50 rounded-lg p-3 text-center hover-lift">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <TrendingUp className="w-4 h-4 text-green-500" />
-              <span className="text-caption">Floors Climbed</span>
+          <div className="bg-gradient-to-br from-orange-50/70 to-orange-100/30 rounded-xl p-4 border border-orange-200 hover:shadow-lg hover:scale-105 transition-all cursor-pointer group">
+            <div className="flex items-center justify-between mb-2">
+              <TrendingUp className="w-5 h-5 text-orange-500 group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-medium text-orange-600">Floors Climbed</span>
             </div>
-            <div className="text-value-sm text-green-600">{floorsClimbed}</div>
+            <div className="text-2xl font-bold text-orange-700">{floorsClimbed}</div>
+            <div className="h-1 bg-orange-200 rounded-full mt-2 overflow-hidden">
+              <div 
+                className="h-full bg-orange-500 rounded-full transition-all duration-1000"
+                style={{ width: `${Math.min((floorsClimbed / 20) * 100, 100)}%` }}
+              ></div>
+            </div>
           </div>
         </div>
 
-        {/* Heart Rate (if available) */}
+        {/* Heart Rate Monitor */}
         {healthData.heart_rate && (
-          <div className="bg-red-50 rounded-lg p-3 text-center hover-lift">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Activity className="w-4 h-4 text-red-500" />
-              <span className="text-caption">Heart Rate</span>
+          <div className="bg-gradient-to-br from-orange-50 to-orange-100/30 rounded-xl p-4 border-2 border-orange-200 relative overflow-hidden">
+            <div className="absolute inset-0 opacity-10">
+              <svg className="w-full h-full" viewBox="0 0 100 30">
+                <path 
+                  d="M 0 15 Q 5 15 10 5 T 20 15 T 30 5 T 40 15 T 50 5 T 60 15 T 70 5 T 80 15 T 90 5 T 100 15"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  fill="none"
+                  className="text-orange-500"
+                />
+              </svg>
             </div>
-            <div className="text-value-sm text-red-600">{healthData.heart_rate} bpm</div>
+            <div className="relative flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Activity className={`w-6 h-6 text-orange-500 ${pulse ? 'scale-125' : 'scale-100'} transition-transform`} />
+                <div>
+                  <div className="text-xs text-orange-600 font-medium">Heart Rate</div>
+                  <div className="text-3xl font-bold text-orange-700">{healthData.heart_rate} <span className="text-lg">bpm</span></div>
+                </div>
+              </div>
+              <Badge className={`${healthData.heart_rate > 100 ? 'bg-orange-500' : 'bg-white border-2 border-orange-500 text-orange-600'} px-3 py-1`}>
+                {healthData.heart_rate > 100 ? 'Elevated' : 'Normal'}
+              </Badge>
+            </div>
           </div>
         )}
 
-        {/* AI Health Recommendation */}
-        <div className="bg-blue-50 border border-blue-100 rounded-lg p-3">
-          <div className="flex items-start gap-2">
-            <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center mt-0.5">
-              <span className="text-white text-xs font-bold">AI</span>
+        {/* AI Health Recommendation with Animation */}
+        <div className={`${colors.bg} border-2 ${colors.border} rounded-xl p-4 relative overflow-hidden`}>
+          <div className="absolute top-0 right-0 opacity-5">
+            <Brain className="w-24 h-24" />
+          </div>
+          <div className="relative flex items-start gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+              <span className="text-white text-sm font-bold">AI</span>
             </div>
-            <div>
-              <p className="text-caption font-medium text-blue-800 mb-1">Health Tip</p>
-              <p className="text-caption text-blue-700">
+            <div className="flex-1">
+              <div className="text-sm font-bold text-gray-900 mb-1 flex items-center gap-2">
+                Health Tip
+                <Zap className="w-4 h-4 text-orange-500" />
+              </div>
+              <p className="text-sm text-gray-700 leading-relaxed">
                 {riskLevel === 'green' 
                   ? "You're doing great! Keep maintaining good work-life balance."
                   : riskLevel === 'yellow'
@@ -177,43 +271,41 @@ export function HealthGaugeCard({ healthData, isLoading }: HealthGaugeCardProps)
           </div>
         </div>
 
-        {/* Status & Actions */}
-        <div className="space-y-3">
-          <div className="text-center">
-            <div className="text-caption text-black/60">
-              Updated {formatRelativeTime(healthData.last_updated)}
-            </div>
-            <div className="text-caption text-black/40">
-              Next check in {getNextCheckTime(healthData.last_updated)}
-            </div>
+        {/* Status Footer with Live Updates */}
+        <div className="flex items-center justify-between bg-gray-50 rounded-lg p-3 border border-gray-200">
+          <div className="text-xs">
+            <div className="text-gray-500">Updated <span className="font-medium text-gray-700">1 sec ago</span></div>
+            <div className="text-gray-400 mt-0.5">Next check in <span className="font-semibold text-orange-600">{nextCheckSeconds} sec</span></div>
           </div>
-
           <Button 
             variant="outline" 
-            size="sm" 
-            className="w-full"
+            size="sm"
+            className="hover:bg-orange-50 hover:border-orange-300 hover:text-orange-600 transition-colors"
             onClick={() => setShowDetails(!showDetails)}
           >
-            {showDetails ? 'Hide Details' : 'View Details'}
+            {showDetails ? 'Hide' : 'Details'}
           </Button>
         </div>
 
-        {/* Expanded Details */}
+        {/* Expandable Detailed Stats */}
         {showDetails && (
-          <div className="mt-4 pt-4 border-t border-gray-100 space-tight fade-in">
-            <h5 className="text-label mb-3">Today's Activity</h5>
+          <div className="mt-2 bg-white rounded-xl border-2 border-gray-200 p-4 space-y-3 animate-in fade-in slide-in-from-top-2">
+            <h5 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+              <Activity className="w-4 h-4 text-orange-500" />
+              Today's Activity Summary
+            </h5>
             <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-caption">Distance Covered</span>
-                <span className="text-label">{healthData.distance_covered_km}km</span>
+              <div className="flex justify-between items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <span className="text-sm text-gray-600">Distance Covered</span>
+                <span className="text-sm font-bold text-gray-900">{healthData.distance_covered_km} km</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-caption">Deliveries Made</span>
-                <span className="text-label">{healthData.deliveries_completed}</span>
+              <div className="flex justify-between items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <span className="text-sm text-gray-600">Deliveries Made</span>
+                <span className="text-sm font-bold text-gray-900">{healthData.deliveries_completed}</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-caption">Continuous Driving</span>
-                <span className="text-label">{Math.round(healthData.continuous_driving_minutes)}min</span>
+              <div className="flex justify-between items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <span className="text-sm text-gray-600">Continuous Driving</span>
+                <span className="text-sm font-bold text-gray-900">{Math.round(healthData.continuous_driving_minutes)} min</span>
               </div>
             </div>
           </div>

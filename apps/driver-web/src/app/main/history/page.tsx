@@ -85,7 +85,7 @@ export default function HistoryPage() {
                 <div className="text-right">
                   <div className="font-semibold text-black">{formatCurrency(day.earnings)}</div>
                   {day.bonus > 0 && (
-                    <div className="text-sm text-green-600">+{formatCurrency(day.bonus)} bonus</div>
+                    <div className="text-sm text-orange-600">+{formatCurrency(day.bonus)} bonus</div>
                   )}
                   <Badge variant="secondary" className="mt-1">
                     {day.status}

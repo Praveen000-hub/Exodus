@@ -78,9 +78,9 @@ export function SwapDetailsModal({
 
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
-      case 'high': return 'text-red-600 bg-red-50 border-red-200';
+      case 'high': return 'text-orange-700 bg-orange-50 border-orange-200';
       case 'medium': return 'text-orange-600 bg-orange-50 border-orange-200';
-      case 'low': return 'text-green-600 bg-green-50 border-green-200';
+      case 'low': return 'text-orange-500 bg-orange-50 border-orange-200';
       default: return 'text-gray-600 bg-gray-50 border-gray-200';
     }
   };
@@ -119,11 +119,11 @@ export function SwapDetailsModal({
                     <h3 className="text-subheading">{swap.requesterName}</h3>
                     <div className="flex items-center gap-3 mt-1">
                       <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                        <Star className="w-4 h-4 text-orange-500 fill-current" />
                         <span className="text-label">{swap.requesterRating} rating</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <Award className="w-4 h-4 text-blue-500" />
+                        <Award className="w-4 h-4 text-orange-500" />
                         <span className="text-label">Verified driver</span>
                       </div>
                     </div>
@@ -161,7 +161,7 @@ export function SwapDetailsModal({
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-green-500" />
+                <Sparkles className="w-5 h-5 text-orange-500" />
                 AI Compatibility Analysis
               </CardTitle>
             </CardHeader>
@@ -169,7 +169,7 @@ export function SwapDetailsModal({
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-6">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-subheading">Match Score</span>
-                  <span className="text-display text-green-600">
+                  <span className="text-display text-orange-600">
                     {Math.round(swap.compatibilityScore * 100)}%
                   </span>
                 </div>

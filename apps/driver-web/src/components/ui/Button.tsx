@@ -9,13 +9,13 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-orange-500 text-white hover:bg-orange-600 hover:shadow-lg hover:-translate-y-0.5 active:bg-orange-700 active:translate-y-0",
-        destructive: "bg-red-500 text-white hover:bg-red-600 hover:shadow-lg hover:-translate-y-0.5 active:bg-red-700 active:translate-y-0",
+        destructive: "bg-orange-600 text-white hover:bg-orange-700 hover:shadow-lg hover:-translate-y-0.5 active:bg-orange-800 active:translate-y-0",
         outline: "border border-orange-500 bg-background text-orange-500 hover:bg-orange-50 hover:shadow-md hover:-translate-y-0.5 active:bg-orange-100 active:translate-y-0",
         secondary: "bg-orange-50 text-orange-600 hover:bg-orange-100 hover:shadow-md hover:-translate-y-0.5 active:bg-orange-200 active:translate-y-0",
         ghost: "text-orange-500 hover:bg-orange-50 hover:shadow-sm hover:-translate-y-0.5 active:bg-orange-100 active:translate-y-0",
         link: "text-orange-500 underline-offset-4 hover:underline hover:text-orange-600",
-        success: "bg-green-500 text-white hover:bg-green-600 hover:shadow-lg hover:-translate-y-0.5 active:bg-green-700 active:translate-y-0",
-        warning: "bg-yellow-500 text-white hover:bg-yellow-600 hover:shadow-lg hover:-translate-y-0.5 active:bg-yellow-700 active:translate-y-0",
+        success: "bg-orange-500 text-white hover:bg-orange-600 hover:shadow-lg hover:-translate-y-0.5 active:bg-orange-700 active:translate-y-0",
+        warning: "bg-orange-500 text-white hover:bg-orange-600 hover:shadow-lg hover:-translate-y-0.5 active:bg-orange-700 active:translate-y-0",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -86,9 +86,9 @@ export function SwapFilters({
                     isActive 
                       ? 'bg-white/20 text-white' 
                       : filter.id === 'urgent' 
-                        ? 'bg-red-100 text-red-700'
+                        ? 'bg-orange-100 text-orange-700'
                         : filter.id === 'beneficial'
-                          ? 'bg-green-100 text-green-700'
+                          ? 'bg-orange-100 text-orange-700'
                           : filter.id === 'expiring'
                             ? 'bg-orange-100 text-orange-700'
                             : 'bg-gray-100 text-gray-700'

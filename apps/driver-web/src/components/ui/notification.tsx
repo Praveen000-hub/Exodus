@@ -53,26 +53,26 @@ export function Notification({
   const getIcon = () => {
     switch (type) {
       case 'success':
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
+        return <CheckCircle className="w-5 h-5 text-orange-500" />;
       case 'error':
-        return <AlertCircle className="w-5 h-5 text-red-500" />;
+        return <AlertCircle className="w-5 h-5 text-orange-600" />;
       case 'warning':
-        return <AlertTriangle className="w-5 h-5 text-yellow-500" />;
+        return <AlertTriangle className="w-5 h-5 text-orange-500" />;
       default:
-        return <Info className="w-5 h-5 text-blue-500" />;
+        return <Info className="w-5 h-5 text-orange-500" />;
     }
   };
 
   const getTypeStyles = () => {
     switch (type) {
       case 'success':
-        return 'border-green-200 bg-green-50';
+        return 'border-orange-200 bg-orange-50';
       case 'error':
-        return 'border-red-200 bg-red-50';
+        return 'border-orange-300 bg-orange-50';
       case 'warning':
-        return 'border-yellow-200 bg-yellow-50';
+        return 'border-orange-200 bg-orange-50';
       default:
-        return 'border-blue-200 bg-blue-50';
+        return 'border-orange-200 bg-orange-50';
     }
   };
 
@@ -128,10 +128,10 @@ export function Notification({
           <div 
             className={cn(
               'h-full transition-all ease-linear',
-              type === 'success' && 'bg-green-500',
-              type === 'error' && 'bg-red-500',
-              type === 'warning' && 'bg-yellow-500',
-              type === 'info' && 'bg-blue-500'
+              type === 'success' && 'bg-orange-500',
+              type === 'error' && 'bg-orange-600',
+              type === 'warning' && 'bg-orange-500',
+              type === 'info' && 'bg-orange-500'
             )}
             style={{
               width: '100%',

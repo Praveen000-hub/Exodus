@@ -32,7 +32,7 @@ const QuickStats = ({ assignment, isLoading }: { assignment: any; isLoading: boo
     return (
       <div className="grid grid-cols-4 gap-4 mb-8">
         {[...Array(4)].map((_, i) => (
-          <CardSkeleton key={i} className="h-20" />
+          <CardSkeleton key={i} className="h-32" />
         ))}
       </div>
     );
@@ -69,45 +69,119 @@ const QuickStats = ({ assignment, isLoading }: { assignment: any; isLoading: boo
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-4 mb-8">
+    <div className="grid grid-cols-4 gap-5 mb-8">
       {stats.map((stat, index) => {
         const Icon = stat.icon;
+        const isLive = stat.status === 'live';
+        
         return (
           <Card 
             key={index} 
             interactive 
-            className={`hover-lift card-pop stagger-${index + 1}`}
+            className={`relative overflow-hidden bg-white hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-2 border-gray-100 hover:border-orange-200 stagger-${index + 1} group cursor-pointer`}
+            style={{
+              transform: `perspective(1000px) rotateX(0deg)`,
+            }}
+            onMouseEnter={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const y = e.clientY - rect.top;
+              e.currentTarget.style.transform = `perspective(1000px) rotateX(${(y - rect.height / 2) / 20}deg) rotateY(${(rect.width / 2 - x) / 20}deg) translateY(-8px)`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+            }}
           >
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-caption mb-1">{stat.label}</p>
-                  <p className="text-value-sm">
-                    <AnimatedCounter 
-                      value={stat.value} 
-                      suffix={stat.suffix || ''}
-                      trigger={mounted}
-                      duration={1200}
-                    />
-                  </p>
+            {/* Animated Orange Gradient Overlay on Hover */}
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/0 via-orange-400/0 to-orange-500/0 group-hover:from-orange-500/5 group-hover:via-orange-400/10 group-hover:to-orange-500/5 transition-all duration-500"></div>
+            
+            {/* Spotlight Effect */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-orange-400/20 rounded-full blur-2xl animate-pulse"></div>
+            </div>
+            
+            {/* Decorative Corner Elements */}
+            <div className="absolute top-0 right-0 w-20 h-20 bg-orange-50 rounded-bl-full opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:scale-150"></div>
+            <div className="absolute bottom-0 left-0 w-16 h-16 bg-orange-50 rounded-tr-full opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:scale-150"></div>
+            
+            <CardContent className="p-6 relative">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <p className="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wider group-hover:text-orange-600 transition-colors">{stat.label}</p>
+                  <div className="flex items-baseline gap-1.5">
+                    <p className="text-5xl font-bold text-gray-900 group-hover:text-orange-600 transition-all duration-300 group-hover:scale-110 origin-left">
+                      <AnimatedCounter 
+                        value={stat.value} 
+                        suffix=""
+                        trigger={mounted}
+                        duration={1200}
+                      />
+                    </p>
+                    {stat.suffix && (
+                      <span className="text-xl font-bold text-gray-600 group-hover:text-orange-500 transition-colors">
+                        {stat.suffix}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className={`p-2 rounded-lg transition-all duration-300 hover:scale-110 ${
-                  stat.status === 'live' ? 'bg-orange-50' :
-                  stat.status === 'good' ? 'bg-green-50' : 'bg-gray-50'
-                }`}>
-                  <Icon className={`w-5 h-5 ${
-                    stat.status === 'live' ? 'text-orange-500' :
-                    stat.status === 'good' ? 'text-green-500' : 'text-gray-500'
-                  }`} />
+                
+                {/* Animated Icon Container */}
+                <div className="relative">
+                  <div className="absolute inset-0 bg-orange-500 rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition-all duration-500"></div>
+                  <div className="relative p-4 rounded-2xl bg-gray-50 group-hover:bg-gradient-to-br group-hover:from-orange-500 group-hover:to-orange-600 shadow-lg group-hover:shadow-orange-200 transition-all duration-500 group-hover:scale-110 group-hover:rotate-12">
+                    <Icon className="w-7 h-7 text-gray-400 group-hover:text-white transition-all duration-300" />
+                  </div>
                 </div>
               </div>
-              {stat.status === 'live' && (
-                <Badge className="fairai-live-badge mt-2 pulse-glow">
-                  <div className="fairai-live-dot" />
-                  LIVE
-                </Badge>
+              
+              {/* Interactive Progress Bar */}
+              <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden group-hover:h-2.5 transition-all duration-300">
+                <div 
+                  className="h-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
+                  style={{ 
+                    width: mounted ? (stat.status === 'good' ? '94%' : stat.status === 'live' ? '100%' : '75%') : '0%' 
+                  }}
+                >
+                  {/* Shimmer Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%', animation: 'shimmer 2s infinite' }}></div>
+                  
+                  {/* Pulse Effect on Hover */}
+                  <div className="absolute inset-0 bg-white/30 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                </div>
+              </div>
+              
+              {/* Status Badges */}
+              {isLive && (
+                <div className="mt-4 flex items-center justify-between">
+                  <Badge className="bg-gradient-to-r from-orange-500 to-orange-600 text-white border-0 shadow-lg shadow-orange-200 px-3 py-1.5 group-hover:shadow-xl group-hover:scale-105 transition-all">
+                    <div className="relative flex items-center gap-2">
+                      <div className="relative">
+                        <div className="w-2 h-2 bg-white rounded-full animate-ping absolute"></div>
+                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                      </div>
+                      <span className="font-bold text-xs">LIVE</span>
+                    </div>
+                  </Badge>
+                  <span className="text-xs text-orange-500 font-medium opacity-0 group-hover:opacity-100 transition-opacity">Click to view</span>
+                </div>
+              )}
+              
+              {stat.status === 'good' && (
+                <div className="mt-4 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                  <span className="text-xs font-semibold text-orange-600">Excellent Performance</span>
+                </div>
+              )}
+              
+              {stat.status === 'normal' && (
+                <div className="mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                  <span className="text-xs font-medium text-gray-400 group-hover:text-orange-500 transition-colors">Hover for details</span>
+                </div>
               )}
             </CardContent>
+            
+            {/* Bottom Highlight Line */}
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
           </Card>
         );
       })}

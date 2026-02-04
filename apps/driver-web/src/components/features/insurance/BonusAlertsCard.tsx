@@ -84,8 +84,8 @@ export function BonusAlertsCard() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-3">
-            <div className="p-2 bg-green-50 rounded-lg">
-              <DollarSign className="w-5 h-5 text-green-500" />
+            <div className="p-2 bg-orange-50 rounded-lg">
+              <DollarSign className="w-5 h-5 text-orange-500" />
             </div>
             <div>
               <span className="text-heading">Bonus Alerts</span>
@@ -100,14 +100,14 @@ export function BonusAlertsCard() {
 
       <CardContent className="space-card">
         {/* Hero Stats */}
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-5 hover-lift">
+        <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-5 hover-lift">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-value text-green-600">{formatCurrency(totalToday)}</div>
+              <div className="text-value text-orange-600">{formatCurrency(totalToday)}</div>
               <div className="text-caption">Today</div>
             </div>
             <div>
-              <div className="text-value text-emerald-600">{formatCurrency(totalValidated)}</div>
+              <div className="text-value text-orange-600">{formatCurrency(totalValidated)}</div>
               <div className="text-caption">Confirmed</div>
             </div>
             <div>
@@ -140,11 +140,11 @@ export function BonusAlertsCard() {
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <TypeIcon className={`w-4 h-4 ${typeColor}`} />
-                        <span className="font-medium text-green-700 text-sm">
+                        <span className="font-medium text-orange-700 text-sm">
                           {formatCurrency(bonus.amount)}
                         </span>
                         {bonus.validated ? (
-                          <CheckCircle className="w-3 h-3 text-green-600" />
+                          <CheckCircle className="w-3 h-3 text-orange-600" />
                         ) : (
                           <Clock className="w-3 h-3 text-orange-500" />
                         )}
@@ -178,14 +178,14 @@ export function BonusAlertsCard() {
         </div>
 
         {/* AI Insight */}
-        <div className="bg-green-50 border border-green-100 rounded-lg p-3">
+        <div className="bg-orange-50 border border-orange-100 rounded-lg p-3">
           <div className="flex items-start gap-2">
-            <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mt-0.5">
+            <div className="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center mt-0.5">
               <span className="text-white text-xs font-bold">AI</span>
             </div>
             <div>
-              <p className="text-caption font-medium text-green-800 mb-1">Bonus Tip</p>
-              <p className="text-caption text-green-700">
+              <p className="text-caption font-medium text-orange-800 mb-1">Bonus Tip</p>
+              <p className="text-caption text-orange-700">
                 {totalToday > 50 
                   ? "Great earning day! You're getting fair compensation for challenging conditions."
                   : "Bonuses are automatically detected and added when you face unexpected delays."

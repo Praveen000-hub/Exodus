@@ -219,15 +219,15 @@ export default function SwapPage() {
               <div className="text-caption">Available</div>
             </div>
             <div className="text-center">
-              <div className="text-value text-green-600">{swapCounts.beneficial}</div>
+              <div className="text-value text-orange-600">{swapCounts.beneficial}</div>
               <div className="text-caption">Easier</div>
             </div>
             <div className="text-center">
-              <div className="text-value text-blue-600">{swapCounts.urgent}</div>
+              <div className="text-value text-orange-600">{swapCounts.urgent}</div>
               <div className="text-caption">Urgent</div>
             </div>
             <div className="text-center">
-              <div className="text-value text-purple-600">{swapCounts.expiring}</div>
+              <div className="text-value text-orange-600">{swapCounts.expiring}</div>
               <div className="text-caption">Expiring</div>
             </div>
           </div>
@@ -330,7 +330,7 @@ export default function SwapPage() {
                     </div>
                     <div className="fairai-info-row">
                       {mockCurrentAssignment.hasLift ? (
-                        <CheckCircle2 className="w-4 h-4 text-green-500" />
+                        <CheckCircle2 className="w-4 h-4 text-orange-500" />
                       ) : (
                         <AlertCircle className="w-4 h-4 text-orange-500" />
                       )}
@@ -341,15 +341,15 @@ export default function SwapPage() {
                   <div className="space-tight">
                     <h4 className="text-label mb-3">Earnings & Benefits</h4>
                     <div className="fairai-info-row">
-                      <DollarSign className="w-4 h-4 text-green-500" />
+                      <DollarSign className="w-4 h-4 text-orange-500" />
                       <span>₹{mockCurrentAssignment.earnings} estimated</span>
                     </div>
                     <div className="fairai-info-row">
-                      <Heart className="w-4 h-4 text-red-500" />
+                      <Heart className="w-4 h-4 text-orange-500" />
                       <span>Health score: Good</span>
                     </div>
                     <div className="fairai-info-row">
-                      <Zap className="w-4 h-4 text-blue-500" />
+                      <Zap className="w-4 h-4 text-orange-500" />
                       <span>Efficiency: 94%</span>
                     </div>
                   </div>
@@ -365,8 +365,8 @@ export default function SwapPage() {
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center">
-                          <CheckCircle2 className="w-6 h-6 text-green-500" />
+                        <div className="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center">
+                          <CheckCircle2 className="w-6 h-6 text-orange-500" />
                         </div>
                         <div>
                           <h3 className="text-subheading">{swap.partnerName}</h3>
@@ -374,8 +374,8 @@ export default function SwapPage() {
                           <div className="flex items-center gap-4 mt-1">
                             <span className="text-caption">{swap.date}</span>
                             <div className="flex items-center gap-1">
-                              <TrendingUp className="w-3 h-3 text-green-500" />
-                              <span className="text-caption text-green-600">Saved {swap.savedTime}</span>
+                              <TrendingUp className="w-3 h-3 text-orange-500" />
+                              <span className="text-caption text-orange-600">Saved {swap.savedTime}</span>
                             </div>
                           </div>
                         </div>
@@ -386,7 +386,7 @@ export default function SwapPage() {
                             <div
                               key={i}
                               className={`w-3 h-3 rounded-full ${
-                                i < swap.satisfaction ? 'bg-yellow-400' : 'bg-gray-200'
+                                i < swap.satisfaction ? 'bg-orange-400' : 'bg-gray-200'
                               }`}
                             />
                           ))}
